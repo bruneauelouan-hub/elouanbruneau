@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio | Engineering & Innovation</title>
+    <style>
+        /* --- VARIABLES --- */
+        :root {
+            --bg-color: #05080f;      /* Noir plus profond */
+            --card-glass: rgba(11, 15, 25, 0.85); /* Effet verre fumé */
+            --text-main: #F1F5F9;
+            --text-muted: #94A3B8;
+            --accent: #10B981;        /* Vert Tech */
+            --border: rgba(255, 255, 255, 0.1);
+            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: var(--bg-color);
+            /* Petit motif de grille technique en fond pour éviter le vide */
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        h1, h2, h3, .mono { font-family: var(--font-mono); font-weight: 700; letter-spacing: -0.5px; }
+        
+        /* --- CONTAINER ÉLARGI --- */
+        .container {
+            max-width: 1100px; /* Plus large pour occuper l'écran */
+            margin: 0 auto;
+            padding-top: 80px;
+        }
+
+        /* --- HEADER --- */
+        header {
+            margin-bottom: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 50px;
+            /* Une ligne subtile sous le header */
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 40px;
+        }
+
+        .tagline { font-size: 2.5rem; line-height: 1.1; margin-bottom: 20px;}
+        .highlight { 
+            color: transparent; 
+            -webkit-text-stroke: 1px var(--accent); /* Effet contour moderne */
+        }
+        
+        .profile-frame {
+            width: 180px;
+            height: 180px;
+            border: 1px solid var(--accent);
+            padding: 5px;
+            flex-shrink: 0;
+            background: rgba(16, 185, 129, 0.05);
+        }
+        .profile-frame img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: 0.3s; }
+        .profile-frame:hover img { filter: grayscale(0%); }
+
+        /* --- NOUVELLES CARTES PROJETS (IMMERSIVES) --- */
+        .section-title {
+            font-size: 1rem; color: var(--accent); margin-bottom: 40px; display: block;
+        }
+
+        .project-card {
+            position: relative;
+            height: 500px; /* Carte haute pour l'immersion */
+            width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 60px;
+            border: 1px solid var(--border);
+            
+            /* Flexbox pour positionner le texte en bas */
+            display: flex;
+            align-items: flex-end;
+            
+            /* IMAGE DE FOND GÉRÉE ICI */
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.3s ease;
+        }
+        
+        /* L'image de fond s'assombrit légèrement au repos pour lire le texte */
+        .project-card::before {
+            content: ''; position: absolute; top:0; left:0; right:0; bottom:0;
+            background: linear-gradient(to bottom, transparent 0%, rgba(5,8,15, 0.9) 100%);
+            z-index: 1;
+        }
+
+        .project-card:hover { transform: scale(1.01); border-color: var(--accent); }
+
+        /* PANNEAU DE TEXTE FLOTTANT (HUD) */
+        .project-panel {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            padding: 40px;
+            background: rgba(5, 8, 15, 0.6); /* Fond semi-transparent */
+            backdrop-filter: blur(8px); /* Le flou magique derrière le texte */
+            border-top: 1px solid var(--border);
+        }
+
+        .project-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; }
+        .project-title { font-size: 2rem; color: white; margin: 0; }
+        .project-tech { 
+            font-family: var(--font-mono); 
+            font-size: 0.8rem; 
+            color: var(--accent); 
+            background: rgba(16, 185, 129, 0.1); 
+            padding: 5px 10px; 
+            border-radius: 4px; 
+        }
+
+        .project-desc { max-width: 700px; font-size: 1rem; color: #cbd5e1; margin-bottom: 20px;}
+
+        /* GRILLE DE MÉTRIQUES INTÉGRÉE */
+        .metrics-row {
+            display: flex;
+            gap: 40px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 20px;
+        }
+        .metric-val { display: block; font-size: 1.5rem; font-weight: 700; color: white; font-family: var(--font-mono); }
+        .metric-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+
+        /* --- BOUTON D'ACTION --- */
+        .btn-link {
+            display: inline-block;
+            margin-top: 0;
+            color: white;
+            border: 1px solid white;
+            padding: 10px 20px;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            transition: 0.2s;
+            position: absolute; /* Bouton en bas à droite */
+            bottom: 40px;
+            right: 40px;
+        }
+        .btn-link:hover { background: white; color: black; }
+
+        /* MOBILE RESPONSIVE */
+        @media (max-width: 768px) {
+            header { flex-direction: column-reverse; align-items: flex-start; }
+            .project-card { height: auto; display: block; }
+            .project-panel { position: relative; background: var(--bg-color); }
+            .btn-link { position: relative; bottom: auto; right: auto; margin-top: 20px; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <header>
+            <div>
+                <span class="mono" style="color: var(--accent);">// MECHANICAL ENGINEER</span>
+                <h1 class="tagline">
+                    Bridging Physical Systems<br>
+                    & <span class="highlight">Digital Intelligence</span>
+                </h1>
+                <p style="color: var(--text-muted); max-width: 600px;">
+                    Candidat MSc Stanford. Spécialisé en Robotique, Simulation & Data.
+                    <br>Étudiant Arts et Métiers ParisTech.
+                </p>
+            </div>
+            <div class="profile-frame">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Profile">
+            </div>
+        </header>
+
+        <section>
+            <span class="section-title mono">01. SELECTED PROJECTS</span>
+
+            <article class="project-card" style="background-image: url('https://images.unsplash.com/photo-1558433916-90a36b1b0664?q=80&w=2070&auto=format&fit=crop');">
+                
+                <div class="project-panel">
+                    <div class="project-header">
+                        <h3 class="project-title">Hybrid Energy Architecture</h3>
+                        <span class="project-tech">MATLAB / SIMULINK / PROTO</span>
+                    </div>
+                    
+                    <p class="project-desc">
+                        Conception d'un système de puissance hybride (Li-ion + Supercondensateurs) pour optimiser le freinage régénératif. Création d'un algorithme de contrôle prédictif pour gérer les pics de puissance.
+                    </p>
+
+                    <div class="metrics-row">
+                        <div>
+                            <span class="metric-val">-30%</span>
+                            <span class="metric-label">Mass Reduction</span>
+                        </div>
+                        <div>
+                            <span class="metric-val">1.2s</span>
+                            <span class="metric-label">Response Time</span>
+                        </div>
+                        <div>
+                            <span class="metric-val">Research</span>
+                            <span class="metric-label">TIPE Distinction</span>
+                        </div>
+                    </div>
+
+                    <a href="#" class="btn-link">VIEW CASE STUDY &rarr;</a>
+                </div>
+            </article>
+
+            <article class="project-card" style="background-image: url('https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1965&auto=format&fit=crop');">
+                
+                <div class="project-panel">
+                    <div class="project-header">
+                        <h3 class="project-title">Digital Twin Assembly</h3>
+                        <span class="project-tech">PYTHON / ANSYS / FEA</span>
+                    </div>
+                    
+                    <p class="project-desc">
+                        Développement d'un jumeau numérique pour une ligne d'assemblage robotisée. Utilisation de l'analyse par éléments finis (FEA) pour prédire la fatigue structurelle avant prototypage.
+                    </p>
+
+                    <div class="metrics-row">
+                        <div>
+                            <span class="metric-val">98%</span>
+                            <span class="metric-label">Accuracy</span>
+                        </div>
+                        <div>
+                            <span class="metric-val">Python</span>
+                            <span class="metric-label">Automated Script</span>
+                        </div>
+                    </div>
+
+                    <a href="#" class="btn-link">VIEW CODE &rarr;</a>
+                </div>
+            </article>
+
+        </section>
+
+        <footer style="text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 80px; font-family: var(--font-mono);">
+            <p>Designed for Stanford Application // 2024</p>
+        </footer>
+
+    </div>
+
+</body>
+</html>
